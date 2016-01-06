@@ -2,7 +2,7 @@
 ;;; code:
 ;; TODO, set C-x p, the privious command.
 (set-frame-parameter (selected-frame) 'alpha (list 93 81))
-(add-to-list 'default-frame-alist (cons 'alpha (list 91 91)))
+(add-to-list 'default-frame-alist (cons 'alpha (list 81 81)))
 (global-set-key (kbd "C-S-d") 'backward-kill-word)
 (global-set-key "\C-o" 'lg-parensis)
 (global-set-key "\C-q" "(")
@@ -89,6 +89,7 @@
 
 ;; C-' ' as alias
 (global-set-key (kbd "C-' <SPC>") "~")
+;;(global-set-key (kbd "C-' ' <SPC>") "!")
 (global-set-key (kbd "C-' ' a") "`")
 (global-set-key (kbd "C-' ' q") "!")
 (global-set-key (kbd "C-' ' w") "@")
@@ -98,6 +99,7 @@
 (global-set-key (kbd "C-' ' y") "^")
 (global-set-key (kbd "C-' ' u") "&")
 (global-set-key (kbd "C-' ' i") "*")
+(global-set-key (kbd "C-' i") "*")
 (global-set-key (kbd "C-' o") "_")
 (global-set-key (kbd "C-' ' o") "-")
 (global-set-key (kbd "C-' ' p") "+" )
