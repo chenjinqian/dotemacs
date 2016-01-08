@@ -14,3 +14,7 @@ I hate press those "#$%[`:{}"  symbols, it make my finger leave the comfort zone
 One day I work in emacs for five hours, editing some text. Until then I find out my finger is really in pain. I didn't believe it before, but it seems the rumour is true. I find that the main reason is that I have to press the ctrl key all the time, as I move between the text, stop and decide what to do next. I changed to evil-mode for a while, and try some thing like control-mode. It is not easy to get used to another key set, and constantly changing mode make me nervous. So, after some searching, I make some repeate functions. For example, now if I want to move backward in 10s chars, I can just press Ctrl-u bbbbbbbbbbbb, in this way I do not have to press Ctrl key for a long time. Similar to forward and delete. One fact is that, if you want to press C-b right, you have to press Ctrl key first, and release it after you release 'b' key, so you just press the Ctrl key during all these 'b' key. In this way, you can not be really fast. Number prefix won't help much, cause it's way harder to press. There are some other keybinding, now I can get all my job done without pressing any key more than 1sec. So far so good for me.
 
 4. other shortcut I find usefull. Including clear the buffer, eval one piece of python code, navagating between the frames quickly. No special reason, just personal preferences.
+
+Author: ChenJinQian
+
+Email: 2012chenjinqian@gmail
