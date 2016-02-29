@@ -1,29 +1,29 @@
 ;;; package summarry
 ;;; code:
-(set-frame-parameter (selected-frame) 'alpha (list 93 81))
-(add-to-list 'default-frame-alist (cons 'alpha (list 81 81)))
+(set-frame-parameter (selected-frame) 'alpha (list 100 31))
+(add-to-list 'default-frame-alist (cons 'alpha (list 100 81)))
+
+;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
 
 (global-set-key (kbd "C-S-d") 'backward-kill-word)
 (global-set-key "\C-o" 'lg-parensis)
-(global-set-key "\C-q" "(")
+(global-set-key "\C-q" "=")
 (global-set-key (kbd "C-S-o") ")")
 (global-set-key (kbd "C-S-j") 'paredit-newline)
 (global-set-key (kbd "C-M-j") 'sanityinc/open-line-with-reindent)
 (global-set-key (kbd "C-j")  'lg-ce-ent)
 (global-set-key (kbd "C-^") 'previous-buffer)
 (global-set-key (kbd "C-&") 'next-buffer)
-(load-file "~/.emacs.d/evil/init.el")
-(global-set-key (kbd "C-z") 'evil-mode)
-(setq evil-default-state 'emacs)
+;;(load-file "~/.emacs.d/evil/init.el")
+;;(global-set-key (kbd "C-z") 'evil-mode)
+;;(setq evil-default-state 'emacs)
 
 ;;;;; some of my own funtions in use ;;;;;
 
 (fset 'lg-run-python-line
       [?\C-a ?\C-  ?\C-\M-f ?\C-c ?\C-r ?\C-n ?\C-a])
-(fset 'lg-kill-inword
-      [?\C-b ?\M-f C-backspace])
 (fset 'lg-parensis
-   "()\C-b")
+      "()\C-b")
 (fset 'function-comment-my
    "\"\"\"\"\"\"\C-b\C-b\C-b")
 (fset 'lg-op-newline
@@ -75,9 +75,9 @@
 
 ;;(setq inferior-lisp-program "/usr/bin/sbcl")
 (setq inferior-lisp-program "/usr/bin/clisp")
-(require 'slime)
-(slime-setup)
-(slime-setup '(slime-fancy))
+;;(require 'slime)
+;;(slime-setup)
+;;(slime-setup '(slime-fancy))
 (require 'cmuscheme)
 (setq scheme-program-name "scheme")
 (setq racket-program-name "racket")
@@ -88,15 +88,16 @@
 (setq auto-mode-alist (append '( ("\\.rkt\\'" .
                                   racket-mode)) auto-mode-alist))
 ;to set the interpreter of python
-(when (executable-find "ipython3")  (setq python-shell-interpreter "ipython3"))
+(when (executable-find "ipython")  (setq python-shell-interpreter "ipython"))
 ;(setq python-program-name "python3")
 ;;TODO, the interprator do not compareable,
 ;;and I cann't choose the programe by changing the name. In other words, this option is fixed.
 ;;there are some emacs-ipython git-repos, read as this:https://github.com/burakbayramli/emacs-ipython
-(add-hook 'scheme-mode-hook 'autopair-mode)
-(add-hook 'python-mode-hook 'autopair-mode)
-(add-hook 'racket-mode-hook 'autopair-mode)
-(add-hook 'picolisp-mode-hook 'autopair-mode)
+
+;(add-hook 'scheme-mode-hook 'autopair-mode)
+;(add-hook 'python-mode-hook 'autopair-mode)
+;(add-hook 'racket-mode-hook 'autopair-mode)
+;(add-hook 'picolisp-mode-hook 'autopair-mode)
 
 ;;;;;;;;;;;;;;;; some short keys to save my little finger ;;;;;;;;;;;;;;;;;;;;
 
@@ -126,17 +127,16 @@
 (global-set-key (kbd "C-u g") 'keyboard-quit)
 (global-set-key (kbd "C-u u l") 'eshell/clc)
 ;;(global-set-key (kbd "C-u w") (lambda (interactive) (forward-word) (backward-kill-word)))
-(global-set-key (kbd "C-u w") 'lg-kill-inword)
 (global-set-key (kbd "C-u z") 'repeat)
 (global-set-key (kbd "C-u a") 'move-beginning-of-line)
 (global-set-key (kbd "C-u <RET>") 'execute-extended-command)
 (global-set-key (kbd "C-u e e") "#")
-(global-set-key (kbd "C-u e d") "  ==  ")
-(global-set-key (kbd "C-u e n") "  !=  ")
-(global-set-key (kbd "C-u e s") "  =<  ")
-(global-set-key (kbd "C-u e f") "  >=  ")
-(global-set-key (kbd "C-u e w") "  -=  ")
-(global-set-key (kbd "C-u e r") "  +=  ")
+(global-set-key (kbd "C-u e d") "==")
+(global-set-key (kbd "C-u e n") "!=")
+(global-set-key (kbd "C-u e s") "<=")
+(global-set-key (kbd "C-u e f") "=>")
+(global-set-key (kbd "C-u e w") "-=")
+(global-set-key (kbd "C-u e r") "+=")
 
 ;; C-u u as alias
 (global-set-key (kbd "C-u <SPC>") "~")
@@ -155,7 +155,7 @@
 (global-set-key (kbd "C-u u p") "+" )
 ;;(global-set-key (kbd "C-u u") "-")
 (global-set-key (kbd "C-u t") "*")
-(global-set-key (kbd "C-u q") " = ")
+(global-set-key (kbd "C-u q") "(")
 (global-set-key (kbd "C-x m")  'execute-extended-command)
 (global-set-key (kbd "C-c m") 'compose-mail)
 
@@ -186,6 +186,19 @@
   (require 'repeat)
   (make-repeatable 'my-previous-line))
 (global-set-key (kbd "C-u p") 'my-previous-line-repeat)
+
+;;backward-kill-word repeat version
+;;TODO, this could be done better way, with fine char condition specify.
+;;(fset 'lg-kill-inword      [?\C-b ?\M-f C-backspace])
+(defun my-kill-inword ()
+  "also backward-kill-word"
+  (interactive)
+  (backward-kill-word 1))
+(defun my-kill-inword-repeat ()
+  (interactive)
+  (require 'repeat)
+  (make-repeatable 'my-kill-inword))
+(global-set-key (kbd "C-u w") 'my-kill-inword-repeat)
 
 ;;backward-char
 (defun my-backward-char ()

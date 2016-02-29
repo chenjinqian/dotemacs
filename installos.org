@@ -1,0 +1,8 @@
+#+STARTUP: showall
+
+** record everything I do durign this ubuntu installation, and make it automate next time.
+
+** todo
+   + gnome-termianal config file backups.
+   + install emacs modules, evil, slime, etcs.
+   + pip install python modules
