@@ -1,6 +1,6 @@
 ;;; package summarry
 ;;; code:
-(set-frame-parameter (selected-frame) 'alpha (list 100 31))
+(set-frame-parameter (selected-frame) 'alpha (list 80 31))
 (add-to-list 'default-frame-alist (cons 'alpha (list 100 81)))
 
 ;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
@@ -9,9 +9,9 @@
 (global-set-key "\C-o" 'lg-parensis)
 (global-set-key "\C-q" "=")
 (global-set-key (kbd "C-S-o") ")")
-(global-set-key (kbd "C-S-j") 'paredit-newline)
+(global-set-key (kbd "C-j") 'paredit-newline)
 (global-set-key (kbd "C-M-j") 'sanityinc/open-line-with-reindent)
-(global-set-key (kbd "C-j")  'lg-ce-ent)
+(global-set-key (kbd "C-S-j")  'lg-ce-ent)
 (global-set-key (kbd "C-^") 'previous-buffer)
 (global-set-key (kbd "C-&") 'next-buffer)
 ;;(load-file "~/.emacs.d/evil/init.el")
@@ -68,36 +68,40 @@
    (R . t)
    (ruby . t)
    (scheme . t)
-;   (racket . t)
-;   (sbcl . t)
+   ;;(racket . t)
+   ;;(sbcl . t)
    (lisp . t)
    ))
 
-;;(setq inferior-lisp-program "/usr/bin/sbcl")
-(setq inferior-lisp-program "/usr/bin/clisp")
+(setq inferior-lisp-program "/usr/bin/sbcl")
+;;(setq inferior-lisp-program "/usr/bin/clisp")
 ;;(require 'slime)
 ;;(slime-setup)
 ;;(slime-setup '(slime-fancy))
+(require-package 'yasnippet)
+(require 'yasnippet) ;;have to copy the yas file into a new folder ~/.emacs.d/lisp/snippets to make it works.
+(yas-global-mode 1)
+
 (require 'cmuscheme)
 (setq scheme-program-name "scheme")
 (setq racket-program-name "racket")
-;(require 'cmuscheme)
-;(set-variable (quote scheme-program-name) "racket")
-;(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
+;;(require 'cmuscheme)
+;;(set-variable (quote scheme-program-name) "racket")
+;;(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
                                         ;(setq auto-mode-alist (append '(("//.//(frm//|bas//|cls//|vb//)$" .                                 visual-basic-mode)) auto-mode-alist))
 (setq auto-mode-alist (append '( ("\\.rkt\\'" .
                                   racket-mode)) auto-mode-alist))
 ;to set the interpreter of python
 (when (executable-find "ipython")  (setq python-shell-interpreter "ipython"))
-;(setq python-program-name "python3")
-;;TODO, the interprator do not compareable,
+;;(setq python-program-name "python3")
+
 ;;and I cann't choose the programe by changing the name. In other words, this option is fixed.
 ;;there are some emacs-ipython git-repos, read as this:https://github.com/burakbayramli/emacs-ipython
 
-;(add-hook 'scheme-mode-hook 'autopair-mode)
-;(add-hook 'python-mode-hook 'autopair-mode)
-;(add-hook 'racket-mode-hook 'autopair-mode)
-;(add-hook 'picolisp-mode-hook 'autopair-mode)
+;;(add-hook 'scheme-mode-hook 'autopair-mode)
+;;(add-hook 'python-mode-hook 'autopair-mode)
+;;(add-hook 'racket-mode-hook 'autopair-mode)
+;;(add-hook 'picolisp-mode-hook 'autopair-mode)
 
 ;;;;;;;;;;;;;;;; some short keys to save my little finger ;;;;;;;;;;;;;;;;;;;;
 
@@ -108,24 +112,27 @@
 (global-set-key (kbd "C-u \" ") 'function-comment-my)
 (global-set-key (kbd "C-u l") 'lg-run-python-line)
 (global-set-key (kbd "C-u x") 'execute-extended-command)
+
+(define-key yas-minor-mode-map (kbd "C-u y") 'yas-expand)
+;;(global-set-key (kbd "C-u S-y") 'yas-prev-field)
 (global-set-key (kbd "C-u j") [backspace])
 ;;(global-unset-key (kbd "C-d"))
 ;;(global-set-key (kbd "C-S-d") 'paredit-forward-delete)
 (global-set-key (kbd "C-S-d") [backspace])
 (global-set-key (kbd "C-'") [backspace])
 ;;(global-set-key (kbd "C-d") 'paredit-forward-delete)
-(global-set-key (kbd "C-u h") 'backward-kill-word)
 (global-set-key (kbd "C-u k") 'paredit-kill)
 (global-set-key (kbd "C-u C-u") 'switch-window)
 (global-set-key (kbd "C-u c") 'switch-to-buffer)
-(global-set-key (kbd "C-u u c") 'kill-buffer)
-(global-set-key (kbd "C-u u k") 'kill-buffer)
+(global-set-key (kbd "C-u u c") 'find-file)
+(global-set-key (kbd "C-u \S-k") 'kill-buffer)
 (global-set-key (kbd "C-u u f") 'find-file)
 (global-set-key (kbd "C-u u v") 'find-alternate-file)
 (global-set-key (kbd "C-u s") 'save-buffer)
 (global-set-key (kbd "C-u C-s") 'save-some-buffers)
 (global-set-key (kbd "C-u g") 'keyboard-quit)
-(global-set-key (kbd "C-u u l") 'eshell/clc)
+;;(global-set-key (kbd "C-u u l") 'eshell/clc)
+(global-set-key (kbd "C-u \S-l") 'eshell/clc)
 ;;(global-set-key (kbd "C-u w") (lambda (interactive) (forward-word) (backward-kill-word)))
 (global-set-key (kbd "C-u z") 'repeat)
 (global-set-key (kbd "C-u a") 'move-beginning-of-line)
@@ -189,6 +196,7 @@
 
 ;;backward-kill-word repeat version
 ;;TODO, this could be done better way, with fine char condition specify.
+;;TODO, make pnbf keys repeat also in between two keys.
 ;;(fset 'lg-kill-inword      [?\C-b ?\M-f C-backspace])
 (defun my-kill-inword ()
   "also backward-kill-word"
@@ -254,7 +262,29 @@
   (require 'repeat)
   (make-repeatable 'my-paredit-backward-delete))
 (global-set-key (kbd "C-u j") 'my-paredit-backward-delete-repeat)
-(global-set-key (kbd "C-u d") 'my-paredit-backward-delete-repeat)
+
+;;forward delete
+(defun my-paredit-forward-delete ()
+  "backspace and kill one chactor"
+  (interactive)
+  (paredit-forward-delete))
+(defun my-paredit-forward-delete-repeat ()
+  (interactive)
+  (require 'repeat)
+  (make-repeatable 'my-paredit-forward-delete))
+(global-set-key (kbd "C-u d") 'my-paredit-forward-delete-repeat)
+
+
+;;forward delete   sfdsfdsf
+(defun my-paredit-backward-kill-word ()
+  "backspace and kill one chactor"
+  (interactive)
+  (paredit-backward-kill-word))
+(defun my-paredit-backward-kill-word-repeate ()
+  (interactive)
+  (require 'repeat)
+  (make-repeatable 'my-paredit-backward-kill-word))
+(global-set-key (kbd "C-u h") 'my-paredit-backward-kill-word-repeate)
 
 ;;org-mode-hook, to rebind the C-u key.
 ;;(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "C-u ") 'ring-map)))

@@ -84,4 +84,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias em="emacs"
-alias emc="emacsclient --alternate-editor=emacs"
+alias ec="emacsclient --alternate-editor=emacs"
+alias suem="sudo emacs -q -nw"
+alias sagi="sudo apt-get install"
+alias hgrep="history | grep"
