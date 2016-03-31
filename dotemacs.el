@@ -1,6 +1,6 @@
 ;;; package summarry
 ;;; code:
-(set-frame-parameter (selected-frame) 'alpha (list 80 31))
+(set-frame-parameter (selected-frame) 'alpha (list 99 31))
 (add-to-list 'default-frame-alist (cons 'alpha (list 100 81)))
 
 ;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
@@ -55,23 +55,6 @@
 ;;(set-input-method "TeX")
 ;;;I am defining a new key binding in shell mode.
 
-;;org mode configure
-(setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (perl . t)
-   (emacs-lisp . t)
-   (latex . t)
-   (ditaa . t)
-   (sh . t)
-   (R . t)
-   (ruby . t)
-   (scheme . t)
-   ;;(racket . t)
-   ;;(sbcl . t)
-   (lisp . t)
-   ))
 
 (setq inferior-lisp-program "/usr/bin/sbcl")
 ;;(setq inferior-lisp-program "/usr/bin/clisp")
@@ -91,7 +74,7 @@
                                         ;(setq auto-mode-alist (append '(("//.//(frm//|bas//|cls//|vb//)$" .                                 visual-basic-mode)) auto-mode-alist))
 (setq auto-mode-alist (append '( ("\\.rkt\\'" .
                                   racket-mode)) auto-mode-alist))
-;to set the interpreter of python
+                                        ;to set the interpreter of python
 (when (executable-find "ipython")  (setq python-shell-interpreter "ipython"))
 ;;(setq python-program-name "python3")
 
@@ -106,22 +89,21 @@
 ;;;;;;;;;;;;;;;; some short keys to save my little finger ;;;;;;;;;;;;;;;;;;;;
 
 (global-set-key [f12] 'toggle-truncate-lines)
-(global-unset-key (kbd "C-u"))
 (define-prefix-command 'ring-map)
+(global-unset-key (kbd "C-u"))
 (global-set-key (kbd "C-u ") 'ring-map)
 (global-set-key (kbd "C-u \" ") 'function-comment-my)
 (global-set-key (kbd "C-u l") 'lg-run-python-line)
 (global-set-key (kbd "C-u x") 'execute-extended-command)
-
 (define-key yas-minor-mode-map (kbd "C-u y") 'yas-expand)
 ;;(global-set-key (kbd "C-u S-y") 'yas-prev-field)
 (global-set-key (kbd "C-u j") [backspace])
 ;;(global-unset-key (kbd "C-d"))
 ;;(global-set-key (kbd "C-S-d") 'paredit-forward-delete)
 (global-set-key (kbd "C-S-d") [backspace])
-(global-set-key (kbd "C-'") [backspace])
+;; (global-set-key (kbd "C-'") [backspace])
 ;;(global-set-key (kbd "C-d") 'paredit-forward-delete)
-(global-set-key (kbd "C-u k") 'paredit-kill)
+
 (global-set-key (kbd "C-u C-u") 'switch-window)
 (global-set-key (kbd "C-u c") 'switch-to-buffer)
 (global-set-key (kbd "C-u u c") 'find-file)
@@ -129,6 +111,7 @@
 (global-set-key (kbd "C-u u f") 'find-file)
 (global-set-key (kbd "C-u u v") 'find-alternate-file)
 (global-set-key (kbd "C-u s") 'save-buffer)
+(global-set-key (kbd "C-u \S-s") 'save-some-buffers)
 (global-set-key (kbd "C-u C-s") 'save-some-buffers)
 (global-set-key (kbd "C-u g") 'keyboard-quit)
 ;;(global-set-key (kbd "C-u u l") 'eshell/clc)
@@ -136,14 +119,15 @@
 ;;(global-set-key (kbd "C-u w") (lambda (interactive) (forward-word) (backward-kill-word)))
 (global-set-key (kbd "C-u z") 'repeat)
 (global-set-key (kbd "C-u a") 'move-beginning-of-line)
+(global-set-key (kbd "C-u e") 'move-end-of-line)
 (global-set-key (kbd "C-u <RET>") 'execute-extended-command)
-(global-set-key (kbd "C-u e e") "#")
-(global-set-key (kbd "C-u e d") "==")
-(global-set-key (kbd "C-u e n") "!=")
-(global-set-key (kbd "C-u e s") "<=")
-(global-set-key (kbd "C-u e f") "=>")
-(global-set-key (kbd "C-u e w") "-=")
-(global-set-key (kbd "C-u e r") "+=")
+(global-set-key (kbd "C-u \S-e e") "#")
+(global-set-key (kbd "C-u \S-e d") "==")
+(global-set-key (kbd "C-u \S-e n") "!=")
+(global-set-key (kbd "C-u \S-e s") "<=")
+(global-set-key (kbd "C-u \S-e f") "=>")
+(global-set-key (kbd "C-u \S-e w") "-=")
+(global-set-key (kbd "C-u \S-e r") "+=")
 
 ;; C-u u as alias
 (global-set-key (kbd "C-u <SPC>") "~")
@@ -219,6 +203,7 @@
   (make-repeatable 'my-backward-char))
 (global-set-key (kbd "C-u b") 'my-backward-char-repeat)
 
+
 ;;next-line
 (defun my-next-line ()
   "forward char"
@@ -286,7 +271,35 @@
   (make-repeatable 'my-paredit-backward-kill-word))
 (global-set-key (kbd "C-u h") 'my-paredit-backward-kill-word-repeate)
 
+;;forward delete   sfdsfdsf
+(defun my-paredit-kill ()
+  "backspace and kill one chactor"
+  (interactive)
+  (paredit-kill))
+(defun my-paredit-kill-repeate ()
+  (interactive)
+  (require 'repeat)
+  (make-repeatable 'my-paredit-kill))
+(global-set-key (kbd "C-u k") 'my-paredit-kill-repeate)
 ;;org-mode-hook, to rebind the C-u key.
 ;;(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "C-u ") 'ring-map)))
+;;org mode configure
+;;(setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
+
+;;(setq org-agenda-files (list "~/org/work.org"                             "~/org/school.org"                             "~/org/home.org"))
+
+
+;; (define-key key-translation-map (kbd "M-RET") (kbd "C-u"))
+(define-key key-translation-map (kbd "C-b") (kbd "C-u b"))
+(define-key key-translation-map (kbd "C-f") (kbd "C-u f"))
+(define-key key-translation-map (kbd "C-n") (kbd "C-u n"))
+(define-key key-translation-map (kbd "C-p") (kbd "C-u p"))
+(define-key key-translation-map (kbd "C-v") (kbd "C-u v"))
+(define-key key-translation-map (kbd "C-d") (kbd "C-u d"))
+(define-key key-translation-map (kbd "C-k") (kbd "C-u k"))
+;; (define-key key-translation-map (kbd "C-'") (kbd "C-u '"))
+;; (define-key key-translation-map (kbd "C-j") [return]) dfad''
+;; (define-key key-translation-map (kbd "RET") (kbd "C-u"))
+;; (global-set-key (kbd "C-'") 'ring-map)
 
 (provide 'init-local)
