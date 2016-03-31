@@ -80,7 +80,6 @@
 
 ;;and I cann't choose the programe by changing the name. In other words, this option is fixed.
 ;;there are some emacs-ipython git-repos, read as this:https://github.com/burakbayramli/emacs-ipython
-
 ;;(add-hook 'scheme-mode-hook 'autopair-mode)
 ;;(add-hook 'python-mode-hook 'autopair-mode)
 ;;(add-hook 'racket-mode-hook 'autopair-mode)
@@ -89,9 +88,12 @@
 ;;;;;;;;;;;;;;;; some short keys to save my little finger ;;;;;;;;;;;;;;;;;;;;
 
 (global-set-key [f12] 'toggle-truncate-lines)
+;; (keyboard-translate ?\C-h ?\C-?)  ; translate `C-h' to DEL
+;; (keyboard-translate (kbd "<f5>") ?\C-h)           ; translate DEL to `C-h'.
 (define-prefix-command 'ring-map)
 (global-unset-key (kbd "C-u"))
 (global-set-key (kbd "C-u ") 'ring-map)
+(define-key key-translation-map (kbd "M-j") (kbd "C-u"))
 (global-set-key (kbd "C-u \" ") 'function-comment-my)
 (global-set-key (kbd "C-u l") 'lg-run-python-line)
 (global-set-key (kbd "C-u x") 'execute-extended-command)
@@ -104,7 +106,8 @@
 ;; (global-set-key (kbd "C-'") [backspace])
 ;;(global-set-key (kbd "C-d") 'paredit-forward-delete)
 
-(global-set-key (kbd "C-u C-u") 'switch-window)
+;; (global-set-key (kbd "C-u C-u") 'switch-window)
+(global-set-key (kbd "C-u \S-o") 'switch-window)
 (global-set-key (kbd "C-u c") 'switch-to-buffer)
 (global-set-key (kbd "C-u u c") 'find-file)
 (global-set-key (kbd "C-u \S-k") 'kill-buffer)
@@ -290,13 +293,13 @@
 
 
 ;; (define-key key-translation-map (kbd "M-RET") (kbd "C-u"))
-(define-key key-translation-map (kbd "C-b") (kbd "C-u b"))
-(define-key key-translation-map (kbd "C-f") (kbd "C-u f"))
-(define-key key-translation-map (kbd "C-n") (kbd "C-u n"))
-(define-key key-translation-map (kbd "C-p") (kbd "C-u p"))
-(define-key key-translation-map (kbd "C-v") (kbd "C-u v"))
-(define-key key-translation-map (kbd "C-d") (kbd "C-u d"))
-(define-key key-translation-map (kbd "C-k") (kbd "C-u k"))
+;; (define-key key-translation-map (kbd "C-b") (kbd "C-u b"))
+;; (define-key key-translation-map (kbd "C-f") (kbd "C-u f"))
+;; (define-key key-translation-map (kbd "C-n") (kbd "C-u n"))
+;; (define-key key-translation-map (kbd "C-p") (kbd "C-u p"))
+;; (define-key key-translation-map (kbd "C-v") (kbd "C-u v"))
+;; (define-key key-translation-map (kbd "C-d") (kbd "C-u d"))
+;; (define-key key-translation-map (kbd "C-k") (kbd "C-u k"))
 ;; (define-key key-translation-map (kbd "C-'") (kbd "C-u '"))
 ;; (define-key key-translation-map (kbd "C-j") [return]) dfad''
 ;; (define-key key-translation-map (kbd "RET") (kbd "C-u"))
