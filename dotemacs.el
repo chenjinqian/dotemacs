@@ -1,6 +1,6 @@
 ;;; package summarry
 ;;; code:
-(set-frame-parameter (selected-frame) 'alpha (list 99 31))
+(set-frame-parameter (selected-frame) 'alpha (list 99 11))
 (add-to-list 'default-frame-alist (cons 'alpha (list 100 81)))
 
 ;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
@@ -94,6 +94,7 @@
 (global-unset-key (kbd "C-u"))
 (global-set-key (kbd "C-u ") 'ring-map)
 (define-key key-translation-map (kbd "M-j") (kbd "C-u"))
+(define-key key-translation-map (kbd "M-u") (kbd "C-u"))
 (global-set-key (kbd "C-u \" ") 'function-comment-my)
 (global-set-key (kbd "C-u l") 'lg-run-python-line)
 (global-set-key (kbd "C-u x") 'execute-extended-command)
@@ -106,7 +107,7 @@
 ;; (global-set-key (kbd "C-'") [backspace])
 ;;(global-set-key (kbd "C-d") 'paredit-forward-delete)
 
-;; (global-set-key (kbd "C-u C-u") 'switch-window)
+(global-set-key (kbd "C-u C-u") 'switch-window)
 (global-set-key (kbd "C-u \S-o") 'switch-window)
 (global-set-key (kbd "C-u c") 'switch-to-buffer)
 (global-set-key (kbd "C-u u c") 'find-file)
