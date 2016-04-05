@@ -82,9 +82,23 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+addalias(){
+    echo "alias"$1"=" \"$2\" >> ~/.zshrc
+}
 
-alias em="emacs"
-alias ec="emacsclient --alternate-editor=emacs"
+em(){
+    /usr/bin/emacsclient "$@" &
+}  #with errorsto be delete.
+alias emm="emacsclient "
+alias em=em
+# alias em=em
+alias ec="env TERM=xterm-256color emacsclient  --alternate-editor=emacs -t"
 alias suem="sudo emacs -q -nw"
 alias sagi="sudo apt-get install"
 alias hgrep="history | grep"
+alias svn_prep="svn status | grep '^!' | awk '{print $2}' | xargs svn delete"
+alias addalias=addalias
+
+eval "$(thefuck --alias)"
+eval "$(thefuck --alias FUCK)"
+alias logout-gnome="gnome-session-save --force-logout"
