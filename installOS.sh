@@ -24,9 +24,10 @@ sudo apt-get install texlive-full
 sudo apt-get install libpq-dev
 sudo pip install psycopg2
 sudo pip install pgsql   #database adapter.
-sudo pip install reportlib nose
+sudo pip install reportlib nose psutil
 sudo apt-get install postgresql-contrib
 sudo apt-get intall tree docker
+sudo apt-get install icedtea-plugin
 
 sudo apt-get autoremove
 
