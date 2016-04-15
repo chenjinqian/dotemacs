@@ -1,6 +1,6 @@
 ;;; package summarry
 ;;; code:
-(set-frame-parameter (selected-frame) 'alpha (list 99 11))
+(set-frame-parameter (selected-frame) 'alpha (list 99 1))
 (add-to-list 'default-frame-alist (cons 'alpha (list 100 81)))
 
 ;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
@@ -15,6 +15,7 @@
 (global-set-key (kbd "C-^") 'previous-buffer)
 (global-set-key (kbd "C-&") 'next-buffer)
 ;;(load-file "~/.emacs.d/evil/init.el")
+(load-file "~/pro/n-txt/blog/cjq.io/_org/init-org-jekyll.el")
 ;;(global-set-key (kbd "C-z") 'evil-mode)
 ;;(setq evil-default-state 'emacs)
 
@@ -116,7 +117,7 @@
 (global-set-key (kbd "C-u u v") 'find-alternate-file)
 (global-set-key (kbd "C-u s") 'save-buffer)
 (global-set-key (kbd "C-u \S-s") 'save-some-buffers)
-(global-set-key (kbd "C-u C-s") 'save-some-buffers)
+(global-set-key (kbd "C-u C-s") 'shell)
 (global-set-key (kbd "C-u g") 'keyboard-quit)
 ;;(global-set-key (kbd "C-u u l") 'eshell/clc)
 (global-set-key (kbd "C-u \S-l") 'eshell/clc)
