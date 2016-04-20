@@ -14,6 +14,8 @@
 (global-set-key (kbd "C-S-j")  'lg-ce-ent)
 (global-set-key (kbd "C-^") 'previous-buffer)
 (global-set-key (kbd "C-&") 'next-buffer)
+(global-set-key [M-left] 'previous-buffer)
+(global-set-key [M-right] 'next-buffer)
 ;;(load-file "~/.emacs.d/evil/init.el")
 (load-file "~/pro/n-txt/blog/cjq.io/_org/init-org-jekyll.el")
 ;;(global-set-key (kbd "C-z") 'evil-mode)
