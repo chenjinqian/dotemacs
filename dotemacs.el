@@ -4,12 +4,12 @@
 (add-to-list 'default-frame-alist (cons 'alpha (list 100 81)))
 (require-package 'sublimity)
 (sublimity-mode 1)
-(require 'sublimity-attractive)
-(require 'sublimity-scroll)
-(require 'sublimity-map)
+;; (require 'sublimity-attractive)
+;; (require 'sublimity-scroll)
+;; (require 'sublimity-map)
 ;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
-(global-set-key (quote [down]) (quote View-scroll-line-forward))
-(global-set-key (quote [up]) (quote View-scroll-line-backward))
+;; (global-set-key (quote [down]) (quote View-scroll-line-forward))
+;; (global-set-key (quote [up]) (quote View-scroll-line-backward))
 
 (global-set-key (kbd "C-S-d") 'backward-kill-word)
 (global-set-key "\C-o" 'lg-parensis)

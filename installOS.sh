@@ -28,7 +28,8 @@ sudo pip install reportlib nose psutil
 sudo apt-get install postgresql-contrib
 sudo apt-get intall tree docker
 sudo apt-get install icedtea-plugin
-
+sudo apt-get install unixodbc-dev
+sudo pip install pyodbc
 sudo apt-get autoremove
 
 #database,
