@@ -110,3 +110,4 @@ alias ussh="sudo minicom --device /dev/ttyUSB0"
 
 # export SPARK_HOME = '/src/spark/'
 # export PATH = $PATH:$SPARK_HOME
+alias ifconfigg="ifconfig eth0 | grep inet | awk '{ print  }'"
