@@ -56,6 +56,8 @@
   (let ((buffer (generate-new-buffer-name "*shell*"))) ad-do-it))
 (ad-activate 'shell)
 
+(setq explicit-shell-file-name "/bin/bash")
+
 ;;(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 ;;(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 ;;(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
@@ -161,7 +163,7 @@
 (global-set-key (kbd "C-u u o") "-")
 (global-set-key (kbd "C-u u p") "+" )
 ;;(global-set-key (kbd "C-u u") "-")
-(global-set-key (kbd "C-u t") "*")
+(global-set-key (kbd "C-u t") "%")
 (global-set-key (kbd "C-u q") "(")
 (global-set-key (kbd "C-x m")  'execute-extended-command)
 (global-set-key (kbd "C-c m") 'compose-mail)
