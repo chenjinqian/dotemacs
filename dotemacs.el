@@ -1,323 +1,302 @@
-;;; package summarry
-;;; code:
-(set-frame-parameter (selected-frame) 'alpha (list 89 1))
-(add-to-list 'default-frame-alist (cons 'alpha (list 81 81)))
-(require-package 'sublimity)
-(sublimity-mode 1)
-;; (require 'sublimity-attractive)
-;; (require 'sublimity-scroll)
-;; (require 'sublimity-map)
-;;(set-language-envirement 'utf-8) ;;intended to solve emacs input problem, but it seem this is a fake one, gone after reboot.
-;; (global-set-key (quote [down]) (quote View-scroll-line-forward))
-;; (global-set-key (quote [up]) (quote View-scroll-line-backward))
+(require-package 'elisp-slime-nav)
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+  (add-hook hook 'turn-on-elisp-slime-nav-mode))
+(add-hook 'emacs-lisp-mode-hook (lambda () (setq mode-name "ELisp")))
 
-(global-set-key (kbd "C-S-d") 'backward-kill-word)
-(global-set-key "\C-o" 'lg-parensis)
-(global-set-key "\C-q" "=")
-(global-set-key (kbd "C-S-o") ")")
-(global-set-key (kbd "C-j") 'paredit-newline)
-(global-set-key (kbd "C-M-j") 'sanityinc/open-line-with-reindent)
-(global-set-key (kbd "C-S-j")  'lg-ce-ent)
-(global-set-key (kbd "C-^") 'previous-buffer)
-(global-set-key (kbd "C-&") 'next-buffer)
-(global-set-key [M-left] 'previous-buffer)
-(global-set-key [M-right] 'next-buffer)
+(require-package 'lively)
 
-;;(load-file "~/.emacs.d/evil/init.el")
-(load-file "~/pro/n-txt/blog/cjq.io/_org/init-org-jekyll.el")
-;;(global-set-key (kbd "C-z") 'evil-mode)
-;;(setq evil-default-state 'emacs)
+(setq-default initial-scratch-message
+              (concat ";; Happy hacking, " user-login-name " - Emacs ♥ you!\n\n"))
 
-;;;;; some of my own funtions in use ;;;;;
 
-(fset 'lg-run-python-line
-      [?\C-a ?\C-  ?\C-\M-f ?\C-c ?\C-r ?\C-n ?\C-a])
-(fset 'lg-parensis
-      "()\C-b")
-(fset 'function-comment-my
-   "\"\"\"\"\"\"\C-b\C-b\C-b")
-(fset 'lg-op-newline
-      "\C-e\C-j")
-(fset 'lg-sharp-coment2
-      "\C-a#\C-e\C-n")
-(fset 'lg-sharp-coment
-      [?\C-a tab ?# ?\C-p])
-(fset 'lg-period-comment
-      "\C-a\;\;\C-e\C-n")
-(fset 'lg-ce-ent
-      [?\C-e return])
-(defun eshell/clc ()
-  "to clear eshell buffer"
+
+;; Make C-x C-e run 'eval-region if the region is active
+
+(defun sanityinc/eval-last-sexp-or-region (prefix)
+  "Eval region from BEG to END if active, otherwise the last sexp."
+  (interactive "P")
+  (if (and (mark) (use-region-p))
+      (eval-region (min (point) (mark)) (max (point) (mark)))
+    (pp-eval-last-sexp prefix)))
+
+(global-set-key (kbd "M-:") 'pp-eval-expression)
+
+(after-load 'lisp-mode
+  (define-key emacs-lisp-mode-map (kbd "C-x C-e") 'sanityinc/eval-last-sexp-or-region))
+
+(require-package 'ipretty)
+(ipretty-mode 1)
+
+
+(defadvice pp-display-expression (after sanityinc/make-read-only (expression out-buffer-name) activate)
+  "Enable `view-mode' in the output buffer - if any - so it can be closed with `\"q\"."
+  (when (get-buffer out-buffer-name)
+    (with-current-buffer out-buffer-name
+      (view-mode 1))))
+
+
+
+(defun sanityinc/maybe-set-bundled-elisp-readonly ()
+  "If this elisp appears to be part of Emacs, then disallow editing."
+  (when (and (buffer-file-name)
+             (string-match-p "\\.el\\.gz\\'" (buffer-file-name)))
+    (setq buffer-read-only t)
+    (view-mode 1)))
+
+(add-hook 'emacs-lisp-mode-hook 'sanityinc/maybe-set-bundled-elisp-readonly)
+
+
+;; Use C-c C-z to toggle between elisp files and an ielm session
+;; I might generalise this to ruby etc., or even just adopt the repl-toggle package.
+
+(defvar sanityinc/repl-original-buffer nil
+  "Buffer from which we jumped to this REPL.")
+(make-variable-buffer-local 'sanityinc/repl-original-buffer)
+
+(defvar sanityinc/repl-switch-function 'switch-to-buffer-other-window)
+
+(defun sanityinc/switch-to-ielm ()
   (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)))
-(defadvice shell (around always-new-shell)
-  "Always start a new shell. by Ellen Taylor, 2012-07-20"
-  (let ((buffer (generate-new-buffer-name "*shell*"))) ad-do-it))
-(ad-activate 'shell)
+  (let ((orig-buffer (current-buffer)))
+    (if (get-buffer "*ielm*")
+        (funcall sanityinc/repl-switch-function "*ielm*")
+      (ielm))
+    (setq sanityinc/repl-original-buffer orig-buffer)))
 
-(setq explicit-shell-file-name "/bin/bash")
-
-;;(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-;;(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-;;(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-;;(menu-bar-mode 1)
-(setq default-truncate-lines t)
-(setq truncate-lines nil)
-;;(set-input-method "TeX")
-;;;I am defining a new key binding in shell mode.
-
-
-(setq inferior-lisp-program "/usr/bin/sbcl")
-;;(setq inferior-lisp-program "/usr/bin/clisp")
-(require 'slime)
-(slime-setup)
-(slime-setup '(slime-fancy))
-(require-package 'yasnippet)
-(require 'yasnippet) ;;have to copy the yas file into a new folder ~/.emacs.d/lisp/snippets to make it works.
-(yas-global-mode 1)
-
-(require 'cmuscheme)
-(setq scheme-program-name "scheme")
-(setq racket-program-name "racket")
-;;(require 'cmuscheme)
-;;(set-variable (quote scheme-program-name) "racket")
-;;(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
-                                        ;(setq auto-mode-alist (append '(("//.//(frm//|bas//|cls//|vb//)$" .                                 visual-basic-mode)) auto-mode-alist))
-(setq auto-mode-alist (append '( ("\\.rkt\\'" .
-                                  racket-mode)) auto-mode-alist))
-                                        ;to set the interpreter of python
-(when (executable-find "ipython")  (setq python-shell-interpreter "ipython"))
-;;(setq python-program-name "python3")
-
-;;and I cann't choose the programe by changing the name. In other words, this option is fixed.
-;;there are some emacs-ipython git-repos, read as this:https://github.com/burakbayramli/emacs-ipython
-;;(add-hook 'scheme-mode-hook 'autopair-mode)
-;;(add-hook 'python-mode-hook 'autopair-mode)
-;;(add-hook 'racket-mode-hook 'autopair-mode)
-;;(add-hook 'picolisp-mode-hook 'autopair-mode)
-
-;;;;;;;;;;;;;;;; some short keys to save my little finger ;;;;;;;;;;;;;;;;;;;;
-
-(global-set-key [f12] 'toggle-truncate-lines)
-;; (keyboard-translate ?\C-h ?\C-?)  ; translate `C-h' to DEL
-;; (keyboard-translate (kbd "<f5>") ?\C-h)           ; translate DEL to `C-h'.
-(define-prefix-command 'ring-map)
-(global-unset-key (kbd "C-u"))
-(global-set-key (kbd "C-u ") 'ring-map)
-(define-key key-translation-map (kbd "M-j") (kbd "C-u"))
-(define-key key-translation-map (kbd "M-u") (kbd "C-u"))
-(global-set-key (kbd "C-u \" ") 'function-comment-my)
-(global-set-key (kbd "C-u l") 'lg-run-python-line)
-(global-set-key (kbd "C-u x") 'execute-extended-command)
-(define-key yas-minor-mode-map (kbd "C-u y") 'yas-expand)
-;;(global-set-key (kbd "C-u S-y") 'yas-prev-field)
-(global-set-key (kbd "C-u j") [backspace])
-;;(global-unset-key (kbd "C-d"))
-;;(global-set-key (kbd "C-S-d") 'paredit-forward-delete)
-(global-set-key (kbd "C-S-d") [backspace])
-;; (global-set-key (kbd "C-'") [backspace])
-;;(global-set-key (kbd "C-d") 'paredit-forward-delete)
-
-(global-set-key (kbd "C-u C-u") 'switch-window)
-(global-set-key (kbd "C-u \S-o") 'switch-window)
-(global-set-key (kbd "C-u c") 'switch-to-buffer)
-(global-set-key (kbd "C-u u c") 'find-file)
-(global-set-key (kbd "C-u \S-k") 'kill-buffer)
-(global-set-key (kbd "C-u u f") 'find-file)
-(global-set-key (kbd "C-u u v") 'find-alternate-file)
-(global-set-key (kbd "C-u s") 'save-buffer)
-(global-set-key (kbd "C-u \S-s") 'save-some-buffers)
-(global-set-key (kbd "C-u C-s") 'shell)
-(global-set-key (kbd "C-u g") 'keyboard-quit)
-;;(global-set-key (kbd "C-u u l") 'eshell/clc)
-(global-set-key (kbd "C-u \S-l") 'eshell/clc)
-;;(global-set-key (kbd "C-u w") (lambda (interactive) (forward-word) (backward-kill-word)))
-(global-set-key (kbd "C-u z") 'repeat)
-(global-set-key (kbd "C-u r" ) 'query-replace)
-(global-set-key (kbd "C-u \S-r") 'query-replace-regexp)
-;; (global-set-key (kbd "C-u a") 'move-beginning-of-line)
-;; (global-set-key (kbd "C-u e") 'move-end-of-line)
-(global-set-key (kbd "C-u <RET>") 'execute-extended-command)
-(global-set-key (kbd "C-u e e") "#")
-(global-set-key (kbd "C-u e d") "==")
-(global-set-key (kbd "C-u e n") "!=")
-(global-set-key (kbd "C-u e s") "<=")
-(global-set-key (kbd "C-u e f") "=>")
-(global-set-key (kbd "C-u e w") "-=")
-(global-set-key (kbd "C-u e r") "+=")
-
-;; C-u u as alias
-(global-set-key (kbd "C-u <SPC>") "~")
-(global-set-key (kbd "C-u u a") "`")
-(global-set-key (kbd "C-u u q") "!")
-(global-set-key (kbd "C-u u w") "@")
-(global-set-key (kbd "C-u u e") "#")
-(global-set-key (kbd "C-u u r") "$")
-(global-set-key (kbd "C-u u t") "%")
-(global-set-key (kbd "C-u u y") "^")
-(global-set-key (kbd "C-u u u") "&")
-(global-set-key (kbd "C-u u i") "*")
-(global-set-key (kbd "C-u i") "*")
-(global-set-key (kbd "C-u o") "_")
-(global-set-key (kbd "C-u u o") "-")
-(global-set-key (kbd "C-u u p") "+" )
-;;(global-set-key (kbd "C-u u") "-")
-(global-set-key (kbd "C-u t") "%")
-(global-set-key (kbd "C-u q") "(")
-(global-set-key (kbd "C-x m")  'execute-extended-command)
-(global-set-key (kbd "C-c m") 'compose-mail)
-
-;;;;;;;;;;;;;;;;;;; some repeat command, save my ass ;;;;;;;;;;;;;;;;;;;;;;
-
-(defun make-repeatable (command)
-  "Repeat the COMMAND"
-  (let ((repeat-message-function  'ignore))
-    (setq last-repeatable-command command)
-    (repeat nil)))
-(defun my-forward-char ()
-  "forward char"
+(defun sanityinc/repl-switch-back ()
+  "Switch back to the buffer from which we reached this REPL."
   (interactive)
-  (forward-char))
-(defun my-forward-char-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-forward-char))
-(global-set-key (kbd "C-u f") 'my-forward-char-repeat)
+  (if sanityinc/repl-original-buffer
+      (funcall sanityinc/repl-switch-function sanityinc/repl-original-buffer)
+    (error "No original buffer.")))
 
-;;proevious-line
-(defun my-previous-line ()
-  "forward char"
-  (interactive)
-  (previous-line))
-(defun my-previous-line-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-previous-line))
-(global-set-key (kbd "C-u p") 'my-previous-line-repeat)
+(after-load 'lisp-mode
+  (define-key emacs-lisp-mode-map (kbd "C-c C-z") 'sanityinc/switch-to-ielm))
+(after-load 'ielm
+  (define-key ielm-map (kbd "C-c C-z") 'sanityinc/repl-switch-back))
 
-;;backward-kill-word repeat version
-;;TODO, this could be done better way, with fine char condition specify.
-;;TODO, make pnbf keys repeat also in between two keys.
-;;(fset 'lg-kill-inword      [?\C-b ?\M-f C-backspace])
-(defun my-kill-inword ()
-  "also backward-kill-word"
-  (interactive)
-  (backward-kill-word 1))
-(defun my-kill-inword-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-kill-inword))
-(global-set-key (kbd "C-u w") 'my-kill-inword-repeat)
+;; ----------------------------------------------------------------------------
+;; Hippie-expand
+;; ----------------------------------------------------------------------------
 
-;;backward-char
-(defun my-backward-char ()
-  "forward char"
-  (interactive)
-  (backward-char))
-(defun my-backward-char-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-backward-char))
-(global-set-key (kbd "C-u b") 'my-backward-char-repeat)
+(defun set-up-hippie-expand-for-elisp ()
+  "Locally set `hippie-expand' completion functions for use with Emacs Lisp."
+  (make-local-variable 'hippie-expand-try-functions-list)
+  (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol t)
+  (add-to-list 'hippie-expand-try-functions-list 'try-complete-lisp-symbol-partially t)
+  (add-to-list 'hippie-expand-try-functions-list 'my/try-complete-lisp-symbol-without-namespace t))
 
 
-;;next-line
-(defun my-next-line ()
-  "forward char"
-  (interactive)
-  (next-line))
-(defun my-next-line-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-next-line))
-(global-set-key (kbd "C-u n") 'my-next-line-repeat)
+;; ----------------------------------------------------------------------------
+;; Automatic byte compilation
+;; ----------------------------------------------------------------------------
+(when (maybe-require-package 'auto-compile)
+  (auto-compile-on-save-mode 1)
+  (auto-compile-on-load-mode 1))
 
-;;scroll-down
-(defun my-scroll-down ()
-  "forward char"
-  (interactive)
-  (scroll-down))
-(defun my-scroll-down-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-scroll-down))
-(global-set-key (kbd "C-u \S-v") 'my-scroll-down-repeat)
+;; ----------------------------------------------------------------------------
+;; Load .el if newer than corresponding .elc
+;; ----------------------------------------------------------------------------
+(setq load-prefer-newer t)
 
-;;scroll-up
-(defun my-scroll-up ()
-  "forward char"
-  (interactive)
-  (scroll-up))
-(defun my-scroll-up-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-scroll-up))
-(global-set-key (kbd "C-u v") 'my-scroll-up-repeat)
+;; ----------------------------------------------------------------------------
+;; Highlight current sexp
+;; ----------------------------------------------------------------------------
 
-;;make backwards repeat
-(defun my-paredit-backward-delete ()
-  "backspace and kill one chactor"
-  (interactive)
-  (paredit-backward-delete))
-(defun my-paredit-backward-delete-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-paredit-backward-delete))
-(global-set-key (kbd "C-u j") 'my-paredit-backward-delete-repeat)
+(require-package 'hl-sexp)
 
-;;forward delete
-(defun my-paredit-forward-delete ()
-  "backspace and kill one chactor"
-  (interactive)
-  (paredit-forward-delete))
-(defun my-paredit-forward-delete-repeat ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-paredit-forward-delete))
-(global-set-key (kbd "C-u d") 'my-paredit-forward-delete-repeat)
+;; Prevent flickery behaviour due to hl-sexp-mode unhighlighting before each command
+(after-load 'hl-sexp
+  (defadvice hl-sexp-mode (after unflicker (&optional turn-on) activate)
+    (when turn-on
+      (remove-hook 'pre-command-hook #'hl-sexp-unhighlight))))
 
 
-;;forward delete   sfdsfdsf
-(defun my-paredit-backward-kill-word ()
-  "backspace and kill one chactor"
+
+;;; Support byte-compilation in a sub-process, as
+;;; required by highlight-cl
+
+(defun sanityinc/byte-compile-file-batch (filename)
+  "Byte-compile FILENAME in batch mode, ie. a clean sub-process."
+  (interactive "fFile to byte-compile in batch mode: ")
+  (let ((emacs (car command-line-args)))
+    (compile
+     (concat
+      emacs " "
+      (mapconcat
+       'shell-quote-argument
+       (list "-Q" "-batch" "-f" "batch-byte-compile" filename)
+       " ")))))
+
+
+;; ----------------------------------------------------------------------------
+;; Enable desired features for all lisp modes
+;; ----------------------------------------------------------------------------
+(require-package 'rainbow-delimiters)
+(require-package 'redshank)
+(after-load 'redshank
+  (diminish 'redshank-mode))
+
+(defun sanityinc/enable-check-parens-on-save ()
+  "Run `check-parens' when the current buffer is saved."
+  (add-hook 'after-save-hook #'check-parens nil t))
+
+(defvar sanityinc/lispy-modes-hook
+  '(rainbow-delimiters-mode
+    enable-paredit-mode
+    turn-on-eldoc-mode
+    redshank-mode
+    sanityinc/enable-check-parens-on-save)
+  "Hook run in all Lisp modes.")
+
+
+(when (maybe-require-package 'aggressive-indent)
+  (add-to-list 'sanityinc/lispy-modes-hook 'aggressive-indent-mode))
+
+(when (maybe-require-package 'adjust-parens)
+  (defun sanityinc/adjust-parens-setup ()
+    (when (fboundp 'lisp-indent-adjust-parens)
+      (set (make-local-variable 'adjust-parens-fallback-dedent-function) 'ignore)
+      (set (make-local-variable 'adjust-parens-fallback-indent-function) 'ignore)
+      (local-set-key (kbd "<M-left>") 'lisp-dedent-adjust-parens)
+      (local-set-key (kbd "<M-right>") 'lisp-indent-adjust-parens)))
+
+  (add-to-list 'sanityinc/lispy-modes-hook 'sanityinc/adjust-parens-setup))
+
+(defun sanityinc/lisp-setup ()
+  "Enable features useful in any Lisp mode."
+  (run-hooks 'sanityinc/lispy-modes-hook))
+
+(defun sanityinc/emacs-lisp-setup ()
+  "Enable features useful when working with elisp."
+  (set-up-hippie-expand-for-elisp)
+  (ac-emacs-lisp-mode-setup))
+
+(defconst sanityinc/elispy-modes
+  '(emacs-lisp-mode ielm-mode)
+  "Major modes relating to elisp.")
+
+(defconst sanityinc/lispy-modes
+  (append sanityinc/elispy-modes
+          '(lisp-mode inferior-lisp-mode lisp-interaction-mode))
+  "All lispy major modes.")
+
+(require 'derived)
+
+(dolist (hook (mapcar #'derived-mode-hook-name sanityinc/lispy-modes))
+  (add-hook hook 'sanityinc/lisp-setup))
+
+(dolist (hook (mapcar #'derived-mode-hook-name sanityinc/elispy-modes))
+  (add-hook hook 'sanityinc/emacs-lisp-setup))
+
+(if (boundp 'eval-expression-minibuffer-setup-hook)
+    (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
+  (require-package 'eldoc-eval)
+  (require 'eldoc-eval)
+  (eldoc-in-minibuffer-mode 1))
+
+(add-to-list 'auto-mode-alist '("\\.emacs-project\\'" . emacs-lisp-mode))
+(add-to-list 'auto-mode-alist '("archive-contents\\'" . emacs-lisp-mode))
+
+(require-package 'cl-lib-highlight)
+(after-load 'lisp-mode
+  (cl-lib-highlight-initialize))
+
+;; ----------------------------------------------------------------------------
+;; Delete .elc files when reverting the .el from VC or magit
+;; ----------------------------------------------------------------------------
+
+;; When .el files are open, we can intercept when they are modified
+;; by VC or magit in order to remove .elc files that are likely to
+;; be out of sync.
+
+;; This is handy while actively working on elisp files, though
+;; obviously it doesn't ensure that unopened files will also have
+;; their .elc counterparts removed - VC hooks would be necessary for
+;; that.
+
+(defvar sanityinc/vc-reverting nil
+  "Whether or not VC or Magit is currently reverting buffers.")
+
+(defadvice revert-buffer (after sanityinc/maybe-remove-elc activate)
+  "If reverting from VC, delete any .elc file that will now be out of sync."
+  (when sanityinc/vc-reverting
+    (when (and (eq 'emacs-lisp-mode major-mode)
+               buffer-file-name
+               (string= "el" (file-name-extension buffer-file-name)))
+      (let ((elc (concat buffer-file-name "c")))
+        (when (file-exists-p elc)
+          (message "Removing out-of-sync elc file %s" (file-name-nondirectory elc))
+          (delete-file elc))))))
+
+(defadvice magit-revert-buffers (around sanityinc/reverting activate)
+  (let ((sanityinc/vc-reverting t))
+    ad-do-it))
+(defadvice vc-revert-buffer-internal (around sanityinc/reverting activate)
+  (let ((sanityinc/vc-reverting t))
+    ad-do-it))
+
+
+
+(require-package 'macrostep)
+
+(after-load 'lisp-mode
+  (define-key emacs-lisp-mode-map (kbd "C-c e") 'macrostep-expand))
+
+
+
+;; A quick way to jump to the definition of a function given its key binding
+(global-set-key (kbd "C-h K") 'find-function-on-key)
+
+
+
+(when (maybe-require-package 'rainbow-mode)
+  (defun sanityinc/enable-rainbow-mode-if-theme ()
+    (when (string-match "\\(color-theme-\\|-theme\\.el\\)" (buffer-name))
+      (rainbow-mode 1)))
+
+  (add-hook 'emacs-lisp-mode-hook 'sanityinc/enable-rainbow-mode-if-theme))
+
+(when (maybe-require-package 'highlight-quoted)
+  (add-hook 'emacs-lisp-mode-hook 'highlight-quoted-mode))
+
+
+(when (maybe-require-package 'flycheck)
+  (require-package 'flycheck-package)
+  (after-load 'flycheck
+    (flycheck-package-setup)))
+
+
+
+;; ERT
+(after-load 'ert
+  (define-key ert-results-mode-map (kbd "g") 'ert-results-rerun-all-tests))
+
+
+(defun sanityinc/cl-libify-next ()
+  "Find next symbol from 'cl and replace it with the 'cl-lib equivalent."
   (interactive)
-  (paredit-backward-kill-word))
-(defun my-paredit-backward-kill-word-repeate ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-paredit-backward-kill-word))
-(global-set-key (kbd "C-u h") 'my-paredit-backward-kill-word-repeate)
-
-;;forward delete   sfdsfdsf
-(defun my-paredit-kill ()
-  "backspace and kill one chactor"
-  (interactive)
-  (paredit-kill))
-(defun my-paredit-kill-repeate ()
-  (interactive)
-  (require 'repeat)
-  (make-repeatable 'my-paredit-kill))
-(global-set-key (kbd "C-u k") 'my-paredit-kill-repeate)
-;;org-mode-hook, to rebind the C-u key.
-;;(add-hook 'org-mode-hook (lambda () (local-set-key (kbd "C-u ") 'ring-map)))
-;;org mode configure
-;;(setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
-
-;;(setq org-agenda-files (list "~/org/work.org"                             "~/org/school.org"                             "~/org/home.org"))
+  (let ((case-fold-search nil))
+    (re-search-forward
+     (concat
+      "("
+      (regexp-opt
+       ;; Not an exhaustive list
+       '("loop" "incf" "plusp" "first" "decf" "minusp" "assert"
+         "case" "destructuring-bind" "second" "third" "defun*"
+         "defmacro*" "return-from" "labels" "cadar" "fourth"
+         "cadadr") t)
+      "\\_>")))
+  (let ((form (match-string 1)))
+    (backward-sexp)
+    (cond
+     ((string-match "^\\(defun\\|defmacro\\)\\*$")
+      (kill-sexp)
+      (insert (concat "cl-" (match-string 1))))
+     (t
+      (insert "cl-")))
+    (when (fboundp 'aggressive-indent-indent-defun)
+      (aggressive-indent-indent-defun))))
 
 
-;; (define-key key-translation-map (kbd "M-RET") (kbd "C-u"))
-;; (define-key key-translation-map (kbd "C-b") (kbd "C-u b"))
-;; (define-key key-translation-map (kbd "C-f") (kbd "C-u f"))
-;; (define-key key-translation-map (kbd "C-n") (kbd "C-u n"))
-;; (define-key key-translation-map (kbd "C-p") (kbd "C-u p"))
-;; (define-key key-translation-map (kbd "C-v") (kbd "C-u v"))
-;; (define-key key-translation-map (kbd "C-d") (kbd "C-u d"))
-;; (define-key key-translation-map (kbd "C-k") (kbd "C-u k"))
-;; (define-key key-translation-map (kbd "C-'") (kbd "C-u '"))
-;; (define-key key-translation-map (kbd "C-j") [return]) dfad''
-;; (define-key key-translation-map (kbd "RET") (kbd "C-u"))
-;; (global-set-key (kbd "C-'") 'ring-map)
-
-(provide 'init-local)
+(provide 'init-lisp)
