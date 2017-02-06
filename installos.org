@@ -6,3 +6,4 @@
    + gnome-termianal config file backups.
    + install emacs modules, evil, slime, etcs.
    + pip install python modules
+   + use ibus-pinyin and double-pinyin XHE mode, compatable with emacs without extral config.

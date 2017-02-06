@@ -1,4 +1,4 @@
-1;4205;0c;;; package summarry
+;;; package summarry
 ;;; code:
 (set-frame-parameter (selected-frame) 'alpha (list 89 1))
 (add-to-list 'default-frame-alist (cons 'alpha (list 81 81)))
@@ -24,7 +24,7 @@
 (global-set-key [M-right] 'next-buffer)
 
 ;;(load-file "~/.emacs.d/evil/init.el")
-(load-file "~/pro/n-txt/blog/cjq.io/_org/init-org-jekyll.el")
+;; (load-file "~/pro/n-txt/blog/cjq.io/_org/init-org-jekyll.el")
 ;;(global-set-key (kbd "C-z") 'evil-mode)
 ;;(setq evil-default-state 'emacs)
 
