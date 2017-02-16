@@ -162,6 +162,7 @@
 (global-set-key (kbd "C-u u i") "*")
 (global-set-key (kbd "C-u i") "*")
 (global-set-key (kbd "C-u o") "_")
+(global-set-key (kbd "C--") "_")
 (global-set-key (kbd "C-u u o") "-")
 (global-set-key (kbd "C-u u p") "+" )
 ;;(global-set-key (kbd "C-u u") "-")
