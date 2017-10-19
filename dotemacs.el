@@ -36,8 +36,8 @@
       [?\C-a ?\C-  ?\C-\M-f ?\C-c ?\C-r ?\C-n ?\C-a])
 (fset 'lg-parensis
       "()\C-b")
-(fset 'function-comment-my
-   "\"\"\"\"\"\"\C-b\C-b\C-b")
+;; (fset 'function-comment-my
+;;    "\"\"\"\"\"\"\C-b\C-b\C-b")
 (fset 'lg-op-newline
       "\C-e\C-j")
 (fset 'lg-sharp-coment2
@@ -85,12 +85,19 @@
 ;;(require 'cmuscheme)
 ;;(set-variable (quote scheme-program-name) "racket")
 ;;(autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
-                                        ;(setq auto-mode-alist (append '(("//.//(frm//|bas//|cls//|vb//)$" .                                 visual-basic-mode)) auto-mode-alist))
+                                        ;(setq auto-mode-alist (append '(("//.//(frm//|bas//|cls//|vb//)$" .
+                                        ;visual-basic-mode)) auto-mode-alist))
 (setq auto-mode-alist (append '( ("\\.rkt\\'" .
                                   racket-mode)) auto-mode-alist))
                                         ;to set the interpreter of python
-(when (executable-find "ipython")  (setq python-shell-interpreter "ipython"))
-;;(setq python-program-name "python3")
+;; (when (executable-find "ipython")
+;;   (setq python-shell-interpreter "ipython3"
+;;         ;; python-shell-interpreter-args "--simple-prompt --pprint"
+;;         python-shell-interpreter-args "-i"
+;;         ))
+(setq python-shell-interpreter (substitute-in-file-name "$HOME/miniconda3/bin/ipython"))
+(setq python-program-name "python3")
+(require 'py-autopep8)
 
 ;;and I cann't choose the programe by changing the name. In other words, this option is fixed.
 ;;there are some emacs-ipython git-repos, read as this:https://github.com/burakbayramli/emacs-ipython
@@ -109,19 +116,19 @@
 (global-set-key (kbd "C-u ") 'ring-map)
 (define-key key-translation-map (kbd "M-j") (kbd "C-u"))
 (define-key key-translation-map (kbd "M-u") (kbd "C-u"))
-(global-set-key (kbd "C-u \" ") 'function-comment-my)
+;; (global-set-key (kbd "C-u \" ") 'function-comment-my)
 (global-set-key (kbd "C-u l") 'lg-run-python-line)
 (global-set-key (kbd "C-u x") 'execute-extended-command)
 (define-key yas-minor-mode-map (kbd "C-u y") 'yas-expand)
 ;;(global-set-key (kbd "C-u S-y") 'yas-prev-field)
-(global-set-key (kbd "C-u j") [backspace])
+;; (global-set-key (kbd "C-u \S-j") [backspace])
 ;;(global-unset-key (kbd "C-d"))
 ;;(global-set-key (kbd "C-S-d") 'paredit-forward-delete)
 (global-set-key (kbd "C-S-d") [backspace])
-;; (global-set-key (kbd "C-'") [backspace])
 ;;(global-set-key (kbd "C-d") 'paredit-forward-delete)
 
-(global-set-key (kbd "C-u C-u") 'switch-window)
+(global-set-key (kbd "C-u \S-u") 'switch-window)
+(global-set-key (kbd "C-u \'") 'keyboard-quit)
 (global-set-key (kbd "C-u \S-o") 'switch-window)
 (global-set-key (kbd "C-u c") 'switch-to-buffer)
 (global-set-key (kbd "C-u u c") 'find-file)
@@ -140,19 +147,19 @@
 (global-set-key (kbd "C-u z") 'repeat)
 (global-set-key (kbd "C-u r" ) 'query-replace)
 (global-set-key (kbd "C-u \S-r") 'query-replace-regexp)
-;; (global-set-key (kbd "C-u a") 'move-beginning-of-line)
-;; (global-set-key (kbd "C-u e") 'move-end-of-line)
+(global-set-key (kbd "C-u a") 'move-beginning-of-line)
+(global-set-key (kbd "C-u e") 'move-end-of-line)
 (global-set-key (kbd "C-u <RET>") 'execute-extended-command)
-(global-set-key (kbd "C-u e e") "#")
-(global-set-key (kbd "C-u e d") "==")
-(global-set-key (kbd "C-u e n") "!=")
-(global-set-key (kbd "C-u e s") "<=")
-(global-set-key (kbd "C-u e f") "=>")
-(global-set-key (kbd "C-u e w") "-=")
-(global-set-key (kbd "C-u e r") "+=")
+;; (global-set-key (kbd "C-u e e") "#")
+;; (global-set-key (kbd "C-u e d") "==")
+;; (global-set-key (kbd "C-u e n") "!=")
+;; (global-set-key (kbd "C-u e s") "<=")
+;; (global-set-key (kbd "C-u e f") "=>")
+;; (global-set-key (kbd "C-u e w") "-=")
+;; (global-set-key (kbd "C-u e r") "+=")
 
 ;; C-u u as alias
-(global-set-key (kbd "C-u <SPC>") "~")
+(global-set-key (kbd "C-u <SPC>") 'set-mark-command)
 (global-set-key (kbd "C-u u a") "`")
 (global-set-key (kbd "C-u u q") "!")
 (global-set-key (kbd "C-u u w") "@")
@@ -164,11 +171,13 @@
 (global-set-key (kbd "C-u u i") "*")
 (global-set-key (kbd "C-u i") "*")
 (global-set-key (kbd "C-u o") "_")
+(global-set-key (kbd "C-u C-o") "_")
 (global-set-key (kbd "C--") "_")
 (global-set-key (kbd "C-u u o") "-")
 (global-set-key (kbd "C-u u p") "+" )
 ;;(global-set-key (kbd "C-u u") "-")
 (global-set-key (kbd "C-u t") "%")
+(global-set-key (kbd "C-u C-t") "%")
 (global-set-key (kbd "C-u q") "(")
 (global-set-key (kbd "C-x m")  'execute-extended-command)
 (global-set-key (kbd "C-c m") 'compose-mail)
@@ -226,7 +235,6 @@
   (make-repeatable 'my-backward-char))
 (global-set-key (kbd "C-u b") 'my-backward-char-repeat)
 
-
 ;;next-line
 (defun my-next-line ()
   "forward char"
@@ -238,9 +246,20 @@
   (make-repeatable 'my-next-line))
 (global-set-key (kbd "C-u n") 'my-next-line-repeat)
 
+;;new-line
+(defun my-new-line ()
+  "forward char"
+  (interactive)
+  (paredit-newline))
+(defun my-new-line-repeat ()
+  (interactive)
+  (require 'repeat)
+  (make-repeatable 'my-new-line))
+(global-set-key (kbd "C-u j") 'my-new-line-repeat)
+
 ;;scroll-down
 (defun my-scroll-down ()
-  "forward char"
+  y  "forward char"
   (interactive)
   (scroll-down))
 (defun my-scroll-down-repeat ()
@@ -269,7 +288,7 @@
   (interactive)
   (require 'repeat)
   (make-repeatable 'my-paredit-backward-delete))
-(global-set-key (kbd "C-u j") 'my-paredit-backward-delete-repeat)
+(global-set-key (kbd "C-u h") 'my-paredit-backward-delete-repeat)
 
 ;;forward delete
 (defun my-paredit-forward-delete ()
@@ -282,8 +301,7 @@
   (make-repeatable 'my-paredit-forward-delete))
 (global-set-key (kbd "C-u d") 'my-paredit-forward-delete-repeat)
 
-
-;;forward delete   sfdsfdsf
+;;forward delete
 (defun my-paredit-backward-kill-word ()
   "backspace and kill one chactor"
   (interactive)
@@ -292,7 +310,7 @@
   (interactive)
   (require 'repeat)
   (make-repeatable 'my-paredit-backward-kill-word))
-(global-set-key (kbd "C-u h") 'my-paredit-backward-kill-word-repeate)
+(global-set-key (kbd "C-u \S-h") 'my-paredit-backward-kill-word-repeate)
 
 ;;forward delete   sfdsfdsf
 (defun my-paredit-kill ()
@@ -320,30 +338,9 @@
 ;; (define-key key-translation-map (kbd "C-v") (kbd "C-u v"))
 ;; (define-key key-translation-map (kbd "C-d") (kbd "C-u d"))
 ;; (define-key key-translation-map (kbd "C-k") (kbd "C-u k"))
-;; (define-key key-translation-map (kbd "C-'") (kbd "C-u '"))
+(define-key key-translation-map (kbd "C-'") (kbd "C-u"))
 ;; (define-key key-translation-map (kbd "C-j") [return]) dfad''
 ;; (define-key key-translation-map (kbd "RET") (kbd "C-u"))
 ;; (global-set-key (kbd "C-'") 'ring-map)
-
-(require 'cl-lib)
-
-(defun f-incf (&optional first incr repeat)
-  (let ((index (floor (/ (cl-incf count 0) (or repeat 1)))))
-    (+ (or first 1) (* (or incr 1) index))))
-
-;; By
-;; 作者：wolray
-;; 链接：https://zhuanlan.zhihu.com/p/23608879
-;; 来源：知乎
-;; 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-;; \,(f-incf 1 2 2)
-;; 1, something else, 1
-;; 3, something else, 3
-;; 5, something else, 5
-;; 7, something else, 7
-;; 9, something else, 9
-;; 11, something else, 11
-
-
 
 (provide 'init-local)
